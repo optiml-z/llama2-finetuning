@@ -136,7 +136,7 @@ def main(**kwargs):
     #         use_cache=use_cache,
     #         attn_implementation="sdpa" if train_config.use_fast_kernels else None,
     #     )
-    model, tokenizer = load_model(train_config.model_path, train_config.tokenizer_path)
+    model, tokenizer = load_model(train_config.model_name, train_config.tokenizer_path)
 
     # Load the tokenizer and add special tokens
     # tokenizer = Tokenizer(train_config.tokenizer_path)
