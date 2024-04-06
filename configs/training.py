@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 @dataclass
 class train_config:
-    model_path: str="PATH/to/LLAMA/7B"
+    model_name: str="PATH/to/LLAMA/7B"
     tokenizer_path :str = ""
     enable_fsdp: bool=False
     low_cpu_fsdp: bool=False
