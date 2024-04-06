@@ -139,7 +139,7 @@ def main(**kwargs):
     model, tokenizer = load_model(train_config.model_path, train_config.tokenizer_path)
 
     # Load the tokenizer and add special tokens
-    tokenizer = Tokenizer(train_config.tokenizer_path)
+    # tokenizer = Tokenizer(train_config.tokenizer_path)
     # tokenizer.pad_token_id = tokenizer.eos_token_id
 
     print_model_size(model, train_config, rank if train_config.enable_fsdp else 0)
