@@ -26,7 +26,8 @@ from load_model import *
 # from transformers.models.llama.modeling_llama import LlamaDecoderLayer
 
 # from llama_recipes.data.concatenator import ConcatDataset
-from configs import train_config, fsdp_config
+from configs import train_config as TRAIN_CONFIG
+from configs import fsdp_config as FSDP_CONFIG
 from llama_recipes.policies import AnyPrecisionAdamW, apply_fsdp_checkpointing
 
 from llama_recipes.utils import fsdp_auto_wrap_policy
@@ -70,7 +71,7 @@ def setup_wandb(train_config, fsdp_config, **kwargs):
 
 def main(**kwargs):
     # Update the configuration for the training and sharding process
-    train_config, fsdp_config = train_config(), fsdp_config()
+    train_config, fsdp_config = TRAIN_CONFIG(), FSDP_CONFIG()
     update_config((train_config, fsdp_config), **kwargs)
     # Set the seeds for reproducibility
     if is_xpu_available():
@@ -101,41 +102,41 @@ def main(**kwargs):
 
     # Load the pre-trained model and setup its configuration
     use_cache = False if train_config.enable_fsdp else None
-    if train_config.enable_fsdp and train_config.low_cpu_fsdp:
-        """
-        for FSDP, we can save cpu memory by loading pretrained model on rank0 only.
-        this avoids cpu oom when loading large models like llama 70B, in which case
-        model alone would consume 2+TB cpu mem (70 * 4 * 8). This will add some comms
-        overhead and currently requires latest nightly.
-        """
-        v = packaging.version.parse(torch.__version__)
-        verify_latest_nightly = v.is_devrelease and v.dev >= 20230701
-        if not verify_latest_nightly:
-            raise Exception("latest pytorch nightly build is required to run with low_cpu_fsdp config, "
-                            "please install latest nightly.")
-        if rank == 0:
-            model = LlamaForCausalLM.from_pretrained(
-                train_config.model_name,
-                load_in_8bit=True if train_config.quantization else None,
-                device_map="auto" if train_config.quantization else None,
-                use_cache=use_cache,
-                attn_implementation="sdpa" if train_config.use_fast_kernels else None,
-            )
-        else:
-            llama_config = LlamaConfig.from_pretrained(train_config.model_name)
-            llama_config.use_cache = use_cache
-            with torch.device("meta"):
-                model = LlamaForCausalLM(llama_config)
+    # if train_config.enable_fsdp and train_config.low_cpu_fsdp:
+    #     """
+    #     for FSDP, we can save cpu memory by loading pretrained model on rank0 only.
+    #     this avoids cpu oom when loading large models like llama 70B, in which case
+    #     model alone would consume 2+TB cpu mem (70 * 4 * 8). This will add some comms
+    #     overhead and currently requires latest nightly.
+    #     """
+    #     v = packaging.version.parse(torch.__version__)
+    #     verify_latest_nightly = v.is_devrelease and v.dev >= 20230701
+    #     if not verify_latest_nightly:
+    #         raise Exception("latest pytorch nightly build is required to run with low_cpu_fsdp config, "
+    #                         "please install latest nightly.")
+    #     if rank == 0:
+    #         model = LlamaForCausalLM.from_pretrained(
+    #             train_config.model_name,
+    #             load_in_8bit=True if train_config.quantization else None,
+    #             device_map="auto" if train_config.quantization else None,
+    #             use_cache=use_cache,
+    #             attn_implementation="sdpa" if train_config.use_fast_kernels else None,
+    #         )
+    #     else:
+    #         llama_config = LlamaConfig.from_pretrained(train_config.model_name)
+    #         llama_config.use_cache = use_cache
+    #         with torch.device("meta"):
+    #             model = LlamaForCausalLM(llama_config)
 
-    else:
-        model = LlamaForCausalLM.from_pretrained(
-            train_config.model_name,
-            load_in_8bit=True if train_config.quantization else None,
-            device_map="auto" if train_config.quantization else None,
-            use_cache=use_cache,
-            attn_implementation="sdpa" if train_config.use_fast_kernels else None,
-        )
-    model, tokenizer = load_model(train_config.model_name, train_config.tokenizer_path)
+    # else:
+    #     model = LlamaForCausalLM.from_pretrained(
+    #         train_config.model_name,
+    #         load_in_8bit=True if train_config.quantization else None,
+    #         device_map="auto" if train_config.quantization else None,
+    #         use_cache=use_cache,
+    #         attn_implementation="sdpa" if train_config.use_fast_kernels else None,
+    #     )
+    model, tokenizer = load_model(train_config.model_path, train_config.tokenizer_path)
 
     # Load the tokenizer and add special tokens
     tokenizer = Tokenizer(train_config.tokenizer_path)
