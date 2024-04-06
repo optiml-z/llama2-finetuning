@@ -1,0 +1,6 @@
+**/llvenv/**
+# Byte-compiled / optimized / DLL files
+**/__pycache__/**
+
+# VS Code settings
+.vscode/**
