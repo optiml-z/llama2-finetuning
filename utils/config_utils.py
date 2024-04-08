@@ -1,6 +1,3 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
-
 import inspect
 from dataclasses import asdict
 
@@ -16,7 +13,7 @@ from transformers.data import DataCollatorForSeq2Seq
 
 from configs import datasets, lora_config, llama_adapter_config, prefix_config, train_config
 from llama_recipes.data.sampler import LengthBasedBatchSampler, DistributedLengthBasedBatchSampler
-from llama_recipes.utils.dataset_utils import DATASET_PREPROC
+from utils.dataset_utils import DATASET_PREPROC
 
 
 def update_config(config, **kwargs):

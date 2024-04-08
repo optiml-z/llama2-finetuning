@@ -1,8 +1,4 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
-
 from dataclasses import dataclass
-
 
 @dataclass
 class train_config:
@@ -25,7 +21,7 @@ class train_config:
     use_fp16: bool=True
     mixed_precision: bool=True
     val_batch_size: int=4
-    dataset = "samsum_dataset"
+    dataset = "alpaca_dataset"
     peft_method: str = "lora" # None , llama_adapter, prefix
     use_peft: bool=False
     output_dir: str = "PATH/to/save/PEFT/model"

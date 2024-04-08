@@ -1,6 +1,3 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
-
 import os
 from pkg_resources import packaging
 
@@ -36,7 +33,7 @@ from utils.config_utils import (
     generate_dataset_config,
     get_dataloader_kwargs,
 )
-from llama_recipes.utils.dataset_utils import get_preprocessed_dataset
+from utils.dataset_utils import get_preprocessed_dataset
 
 from llama_recipes.utils.fsdp_utils import hsdp_device_mesh
 from llama_recipes.utils.train_utils import (
