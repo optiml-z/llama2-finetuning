@@ -35,4 +35,4 @@ class train_config:
     save_optimizer: bool=True # will be used if using FSDP
     use_fast_kernels: bool = True # Enable using SDPA from PyTroch Accelerated Transformers, make use Flash Attention and Xformer memory-efficient kernels
     use_wandb: bool = False # Enable wandb for experient tracking
-    save_metrics: bool = False # saves training metrics to a json file for later plotting
+    save_metrics: bool = True # saves training metrics to a json file for later plotting
