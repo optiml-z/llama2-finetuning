@@ -1,14 +1,18 @@
+# Update the imports section with the following:
 import argparse
 import json
 import logging
 import os
 import re
 import sys
+from functools import partial
 from pathlib import Path
+from typing import Union
 
 import numpy as np
-import lm_eval
-from lm_eval import evaluator, tasks
+
+from lm_eval import evaluator
+from lm_eval.tasks import TaskManager
 from lm_eval.utils import make_table
 
 
@@ -37,7 +41,7 @@ def handle_output(args, results, logger):
         return
 
     path = Path(args.output_path)
-    if path.is_file() or path.with_name("results.json").is_file():
+    if path.is_file() or path.with_name("q.json").is_file():
         logger.warning(f"File already exists at {path}. Results will be overwritten.")
 
     output_dir = path.parent if path.suffix in (".json", ".jsonl") else path
@@ -70,11 +74,7 @@ def handle_output(args, results, logger):
 
 
 def load_tasks(args):
-    tasks.initialize_tasks()
     if args.open_llm_leaderboard_tasks:
-        current_dir = os.getcwd()
-        config_dir = os.path.join(current_dir, "open_llm_leaderboard")
-        lm_eval.tasks.include_path(config_dir)
         return [
             "arc_challenge_25_shot",
             "hellaswag_10_shot",
@@ -192,30 +192,28 @@ def parse_eval_args():
     )  # Not currently used
     return parser.parse_args()
 
-
+# Replace the existing evaluate_model function with the following:
 def evaluate_model(args):
     try:
+        task_manager = TaskManager(args.verbosity, include_path=args.include_path)
         task_list = load_tasks(args)
-        # Customized model such as Quantized model etc.
-        # In case you are working with a custom model, you can use the following guide to add it here:
-        # https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/interface.md#external-library-usage
+        task_names = task_manager.match_tasks(task_list)
 
-        # Evaluate
         results = evaluator.simple_evaluate(
             model=args.model,
             model_args=args.model_args,
-            tasks=task_list,
+            tasks=task_names,
             num_fewshot=args.num_fewshot,
             batch_size=args.batch_size,
             max_batch_size=args.max_batch_size,
             device=args.device,
             use_cache=args.use_cache,
             limit=args.limit,
-            decontamination_ngrams_path=args.decontamination_ngrams_path,
-            check_integrity=args.check_integrity,
             write_out=args.write_out,
             log_samples=args.log_samples,
             gen_kwargs=args.gen_kwargs,
+            task_manager=task_manager,
+            verbosity=args.verbosity,
         )
         handle_output(args, results, logger)
 

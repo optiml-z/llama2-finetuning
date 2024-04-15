@@ -1,11 +1,8 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
-
 #!/bin/bash
 
 # Prompt the user for the EVAL_PATH
-read -p "Enter the asbolute path to the lm-evaluation-harness: " EVAL_PATH
-conda activate 
+read -p "Enter the absolute path to the lm-evaluation-harness: " EVAL_PATH
+
 # Directory containing YAML files
 DIR="open_llm_leaderboard"
 
