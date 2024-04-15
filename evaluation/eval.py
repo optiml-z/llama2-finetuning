@@ -75,7 +75,10 @@ def handle_output(args, results, logger):
 
 def load_tasks(args):
     if args.open_llm_leaderboard_tasks:
-        return [
+        current_dir = os.getcwd()
+        config_dir = os.path.join(current_dir, "open_llm_leaderboard")
+        task_manager = TaskManager(args.verbosity, include_path=config_dir)
+        task_list = [
             "arc_challenge_25_shot",
             "hellaswag_10_shot",
             "truthfulqa_mc2",
@@ -83,7 +86,10 @@ def load_tasks(args):
             "gsm8k",
             "mmlu",
         ]
-    return args.tasks.split(",") if args.tasks else []
+        return task_manager, task_manager.match_tasks(task_list)
+
+    task_manager = TaskManager(args.verbosity, include_path=args.include_path)     
+    return task_manager, task_manager.match_tasks(args.tasks.split(",") if args.tasks else [])
 
 
 def parse_eval_args():
@@ -195,9 +201,7 @@ def parse_eval_args():
 # Replace the existing evaluate_model function with the following:
 def evaluate_model(args):
     try:
-        task_manager = TaskManager(args.verbosity, include_path=args.include_path)
-        task_list = load_tasks(args)
-        task_names = task_manager.match_tasks(task_list)
+        task_manager, task_names = load_tasks(args)
 
         results = evaluator.simple_evaluate(
             model=args.model,
