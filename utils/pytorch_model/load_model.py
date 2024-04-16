@@ -16,7 +16,8 @@ from fairscale.nn.model_parallel.initialize import (
 from fairscale.nn.model_parallel.initialize import (
     get_model_parallel_rank,
 )
-from llama_utils import ModelArgs, Tokenizer, Transformer  # replace with your actual module
+from .model import ModelArgs, Transformer
+from .tokenizer import Tokenizer 
 
 def load_model(ckpt_dir: str,
         tokenizer_path: str,

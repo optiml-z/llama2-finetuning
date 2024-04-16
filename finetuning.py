@@ -1,6 +1,3 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
-
 import os
 from pkg_resources import packaging
 
@@ -17,27 +14,26 @@ from torch.distributed.fsdp import (
 
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.optim.lr_scheduler import StepLR
-from load_model import *
-# from transformers import (
-#     LlamaForCausalLM,
-#     LlamaTokenizer,
-#     LlamaConfig,
-# )
-# from transformers.models.llama.modeling_llama import LlamaDecoderLayer
+from transformers import (
+    LlamaForCausalLM,
+    LlamaTokenizer,
+    LlamaConfig,
+)
+from transformers.models.llama.modeling_llama import LlamaDecoderLayer
 
-# from llama_recipes.data.concatenator import ConcatDataset
-from configs import train_config as TRAIN_CONFIG
 from configs import fsdp_config as FSDP_CONFIG
+from configs import train_config as TRAIN_CONFIG
+from llama_recipes.data.concatenator import ConcatDataset
 from llama_recipes.policies import AnyPrecisionAdamW, apply_fsdp_checkpointing
 
 from llama_recipes.utils import fsdp_auto_wrap_policy
-from llama_recipes.utils.config_utils import (
+from utils.config_utils import (
     update_config,
     generate_peft_config,
     generate_dataset_config,
     get_dataloader_kwargs,
 )
-from llama_recipes.utils.dataset_utils import get_preprocessed_dataset
+from utils.dataset_utils import get_preprocessed_dataset
 
 from llama_recipes.utils.fsdp_utils import hsdp_device_mesh
 from llama_recipes.utils.train_utils import (
@@ -59,7 +55,7 @@ def setup_wandb(train_config, fsdp_config, **kwargs):
             "You are trying to use wandb which is not currently installed. "
             "Please install it using pip install wandb"
         )
-    from llama_recipes.configs import wandb_config as WANDB_CONFIG
+    from configs import wandb_config as WANDB_CONFIG
     wandb_config = WANDB_CONFIG()
     update_config(wandb_config, **kwargs)
     init_dict = dataclasses.asdict(wandb_config)
@@ -102,45 +98,44 @@ def main(**kwargs):
 
     # Load the pre-trained model and setup its configuration
     use_cache = False if train_config.enable_fsdp else None
-    # if train_config.enable_fsdp and train_config.low_cpu_fsdp:
-    #     """
-    #     for FSDP, we can save cpu memory by loading pretrained model on rank0 only.
-    #     this avoids cpu oom when loading large models like llama 70B, in which case
-    #     model alone would consume 2+TB cpu mem (70 * 4 * 8). This will add some comms
-    #     overhead and currently requires latest nightly.
-    #     """
-    #     v = packaging.version.parse(torch.__version__)
-    #     verify_latest_nightly = v.is_devrelease and v.dev >= 20230701
-    #     if not verify_latest_nightly:
-    #         raise Exception("latest pytorch nightly build is required to run with low_cpu_fsdp config, "
-    #                         "please install latest nightly.")
-    #     if rank == 0:
-    #         model = LlamaForCausalLM.from_pretrained(
-    #             train_config.model_name,
-    #             load_in_8bit=True if train_config.quantization else None,
-    #             device_map="auto" if train_config.quantization else None,
-    #             use_cache=use_cache,
-    #             attn_implementation="sdpa" if train_config.use_fast_kernels else None,
-    #         )
-    #     else:
-    #         llama_config = LlamaConfig.from_pretrained(train_config.model_name)
-    #         llama_config.use_cache = use_cache
-    #         with torch.device("meta"):
-    #             model = LlamaForCausalLM(llama_config)
+    if train_config.enable_fsdp and train_config.low_cpu_fsdp:
+        """
+        for FSDP, we can save cpu memory by loading pretrained model on rank0 only.
+        this avoids cpu oom when loading large models like llama 70B, in which case
+        model alone would consume 2+TB cpu mem (70 * 4 * 8). This will add some comms
+        overhead and currently requires latest nightly.
+        """
+        v = packaging.version.parse(torch.__version__)
+        verify_latest_nightly = v.is_devrelease and v.dev >= 20230701
+        if not verify_latest_nightly:
+            raise Exception("latest pytorch nightly build is required to run with low_cpu_fsdp config, "
+                            "please install latest nightly.")
+        if rank == 0:
+            model = LlamaForCausalLM.from_pretrained(
+                train_config.model_name,
+                load_in_8bit=True if train_config.quantization else None,
+                device_map="auto" if train_config.quantization else None,
+                use_cache=use_cache,
+                attn_implementation="sdpa" if train_config.use_fast_kernels else None,
+            )
+        else:
+            llama_config = LlamaConfig.from_pretrained(train_config.model_name)
+            llama_config.use_cache = use_cache
+            with torch.device("meta"):
+                model = LlamaForCausalLM(llama_config)
 
-    # else:
-    #     model = LlamaForCausalLM.from_pretrained(
-    #         train_config.model_name,
-    #         load_in_8bit=True if train_config.quantization else None,
-    #         device_map="auto" if train_config.quantization else None,
-    #         use_cache=use_cache,
-    #         attn_implementation="sdpa" if train_config.use_fast_kernels else None,
-    #     )
-    model, tokenizer = load_model(train_config.model_path, train_config.tokenizer_path)
+    else:
+        model = LlamaForCausalLM.from_pretrained(
+            train_config.model_name,
+            load_in_8bit=True if train_config.quantization else None,
+            device_map="auto" if train_config.quantization else None,
+            use_cache=use_cache,
+            attn_implementation="sdpa" if train_config.use_fast_kernels else None,
+        )
 
     # Load the tokenizer and add special tokens
-    tokenizer = Tokenizer(train_config.tokenizer_path)
-    # tokenizer.pad_token_id = tokenizer.eos_token_id
+    tokenizer = LlamaTokenizer.from_pretrained(train_config.model_name)
+    tokenizer.pad_token_id = tokenizer.eos_token_id
 
     print_model_size(model, train_config, rank if train_config.enable_fsdp else 0)
 
@@ -284,7 +279,7 @@ def main(**kwargs):
     if not train_config.enable_fsdp or rank==0:
         [print(f'Key: {k}, Value: {v}') for k, v in results.items()]
         if train_config.use_wandb:
-            for k,v in results.items():
+            for k, v in results.items():
                 wandb_run.summary[k] = v
 
 if __name__ == "__main__":
