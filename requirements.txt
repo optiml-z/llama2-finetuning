@@ -1,0 +1,19 @@
+torch>=2.0.1
+fairscale
+--extra-index-url https://download.pytorch.org/whl/test/cu121 llama-recipes
+accelerate
+appdirs
+loralib
+bitsandbytes
+black
+black[jupyter]
+datasets
+fire
+peft
+transformers>=4.34.1
+sentencepiece
+py7zr
+scipy
+optimum
+matplotlib
+git+https://github.com/EleutherAI/lm-evaluation-harness
