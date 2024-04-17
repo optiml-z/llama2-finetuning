@@ -5,6 +5,7 @@ import torch
 
 from dataset import (
     get_alpaca_dataset,
+    get_samsum_dataset,
 )
 
 def load_module_from_py_file(py_file: str) -> object:
@@ -45,6 +46,7 @@ def get_custom_dataset(dataset_config, tokenizer, split: str):
 DATASET_PREPROC = {
     "alpaca_dataset": get_alpaca_dataset,
     "custom_dataset": get_custom_dataset,
+    "samsum_dataset": get_samsum_dataset,
 }
 
 

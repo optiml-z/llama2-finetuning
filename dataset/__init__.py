@@ -1,1 +1,2 @@
 from dataset.alpaca_dataset import InstructionDataset as get_alpaca_dataset
+from datasets.samsum_dataset import get_preprocessed_samsum as get_samsum_dataset

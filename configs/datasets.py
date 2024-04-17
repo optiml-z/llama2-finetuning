@@ -14,3 +14,10 @@ class custom_dataset:
     file: str = "dataset/custom_dataset.py"
     train_split: str = "train"
     test_split: str = "validation"
+
+
+@dataclass
+class samsum_dataset:
+    dataset: str =  "samsum_dataset"
+    train_split: str = "train"
+    test_split: str = "validation"
