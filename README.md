@@ -45,6 +45,5 @@ python3 inference.py --model_name <training_config.model_name> --peft_model <tra
 ### Evaluation
 
 ```bash
-python evaluation/eval.py --model [hf] --model_args pretrained=<training_config.model_name>,dtype="float",peft=<training_config.output_dir> 
---task hellaswag --device cuda:0 --batch_size 8 --output_path eval_results
+python evaluation/eval.py --model [hf] --model_args pretrained=<training_config.model_name>,dtype="float",peft=<training_config.output_dir> --task hellaswag --device cuda:0 --batch_size 8 --output_path eval_results
 ```
