@@ -1,6 +1,6 @@
-# Llama 2 finetuning
+# Llama Models finetuning
 
-To get started with finetuning Llama language models -- ranging from 7B to 70B parameters, firstly download model weights. 
+To get started with finetuning Llama language models -- ranging from 7B to 70B parameters both llama2 and llama3), firstly download model weights. 
 In order to download the model weights and tokenizer, please visit the [Meta website](https://llama.meta.com/llama-downloads/) and accept their License.
 Once your request is approved, you will receive a signed URL over email. Then run the download.sh script, passing the URL provided when prompted to start the download.
 
@@ -18,7 +18,14 @@ pip install -U pip setuptools
 pip install -r requirements.txt
 ```
 
-This finetuning is highly relied on meta-llama/llama-recipe and hence required llama-recipe as a package.
+This finetuning is highly relied on `meta-llama/llama-recipe` and hence required `llama-recipe` as a package. Sometimes installation from package might return error. In such case install 
+`llama-recipe` as follow:
+
+```bash
+git clone git@github.com:meta-llama/llama-recipes.git
+cd llama-recipes
+pip install --extra-index-url https://download.pytorch.org/whl/test/cu121 -e .
+```
 
 Once all the setup is completed, we can begin finetuning the llama2 models. The default dataset used for finetuning is [vicgalle/alpaca-gpt4](https://huggingface.co/datasets/vicgalle/alpaca-gpt4). Download the dataset from [here](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM/blob/main/data/alpaca_gpt4_data.json) and update the 
 [data path](./configs/datasets.py) accordingly. Then use the following scripts for various tasks:
