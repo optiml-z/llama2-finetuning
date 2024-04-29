@@ -1,0 +1,22 @@
+task: unnatural
+dataset_path: json
+dataset_kwargs:
+  data_files: /root/workspace/llama2-finetuning/datasets/unnatural/unnatural_dataset.json
+output_type: generate_until
+training_split: null
+validation_split: train
+test_split: null
+doc_to_text: !function utils.doc_to_text
+doc_to_target: !function utils.doc_to_target
+metric_list:
+  - metric: !function utils.exact
+    aggregation: mean
+    higher_is_better: true
+  - metric: !function utils.f1
+    aggregation: mean
+    higher_is_better: true
+  - metric: !function utils.rouge1
+    higher_is_better: true
+    aggregation:  !function utils.rouge1_agg
+metadata:
+  version: 1.0
