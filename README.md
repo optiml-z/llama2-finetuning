@@ -47,3 +47,11 @@ python3 inference.py --model_name <training_config.model_name> --peft_model <tra
 ```bash
 python evaluation/eval.py --model [hf] --model_args pretrained=<training_config.model_name>,dtype="float",peft=<training_config.output_dir> --task hellaswag --device cuda:0 --batch_size 8 --output_path eval_results
 ```
+
+In order to evaluate a model on a custom dataset, we need to add new tasks under `lm-evaluation-harness/lm_eval/tasks`. A sample custom dataset can be found in `evaluation/custom/unnatural`. Copy this folder to `lm-evaluation-harness/lm_eval/tasks` and install the `lm-evaluation-harness`.
+
+```bash
+cp evaluation/custom/unnatural <path-to>/lm-evaluation-harness/lm_eval/tasks
+cd <path-to>/lm-evaluation-harness
+pip3 install -e .
+```
