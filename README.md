@@ -24,7 +24,8 @@ This finetuning is highly relied on `meta-llama/llama-recipe` and hence required
 ```bash
 git clone git@github.com:meta-llama/llama-recipes.git
 cd llama-recipes
-pip install --extra-index-url https://download.pytorch.org/whl/test/cu121 -e .
+git checkout 2fa8e69b62b0a4d1ea5b6893244ceb93930850c5
+pip install -e .
 ```
 
 Once all the setup is completed, we can begin finetuning the llama2 models. The default dataset used for finetuning is [vicgalle/alpaca-gpt4](https://huggingface.co/datasets/vicgalle/alpaca-gpt4). Download the dataset from [here](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM/blob/main/data/alpaca_gpt4_data.json) and update the 
@@ -51,7 +52,7 @@ python evaluation/eval.py --model [hf] --model_args pretrained=<training_config.
 In order to evaluate a model on a custom dataset, we need to add new tasks under `lm-evaluation-harness/lm_eval/tasks`. A sample custom dataset can be found in `evaluation/custom/unnatural`. Copy this folder to `lm-evaluation-harness/lm_eval/tasks` and install the `lm-evaluation-harness` and modify the `data_files` in `unnatural.yaml` accordingly.
 
 ```bash
-cp evaluation/custom/unnatural <path-to>/lm-evaluation-harness/lm_eval/tasks
+cp -r evaluation/custom/unnatural <path-to>/lm-evaluation-harness/lm_eval/tasks
 cd <path-to>/lm-evaluation-harness
 pip3 install -e .
 ```
