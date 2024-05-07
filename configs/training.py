@@ -9,7 +9,7 @@ class train_config:
     batch_size_training: int=8
     batching_strategy: str="packing" #alternative: padding
     context_length: int=4096
-    gradient_accumulation_steps: int=1
+    gradient_accumulation_steps: int=8
     gradient_clipping: bool = False
     gradient_clipping_threshold: float = 1.0
     num_epochs: int=3
@@ -17,7 +17,7 @@ class train_config:
     max_eval_step: int=0
     num_workers_dataloader: int=16
     lr: float=1e-4
-    weight_decay: float=0.01
+    weight_decay: float=0.0
     gamma: float= 0.85
     seed: int=42
     use_fp16: bool=False
