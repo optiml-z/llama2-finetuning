@@ -91,8 +91,9 @@ def train(model, train_dataloader, eval_dataloader, tokenizer, optimizer, lr_sch
     if train_config.enable_fsdp:
         world_size = int(os.environ["WORLD_SIZE"])
 
-    # Define the mask M
-    mask = {name: (param != 0).float() for name, param in model.named_parameters()}
+    # Define the mask M using a small epsilon value
+    epsilon = 1e-8
+    mask = {name: (param.abs() <= epsilon) for name, param in model.named_parameters()}
 
     autocast = torch.cuda.amp.autocast if train_config.use_fp16 else nullcontext
     train_prep = []
@@ -151,7 +152,7 @@ def train(model, train_dataloader, eval_dataloader, tokenizer, optimizer, lr_sch
                     loss = loss / gradient_accumulation_steps
                     if train_config.save_metrics:
                         train_step_loss.append(loss.detach().float().item())
-                        train_step_perplexity.append(float(torch.exp(loss.detach().float())))
+                        train_step_perplexity.append(float(torch.exp(loss.detach().float()).item()))
                     total_loss += loss.detach().float()
                     if train_config.use_fp16:
                         # if fp16 is enabled, use gradient scaler to handle gradient update
@@ -160,7 +161,7 @@ def train(model, train_dataloader, eval_dataloader, tokenizer, optimizer, lr_sch
                             # Apply mask to gradients
                             for name, param in model.named_parameters():
                                 if param.grad is not None:
-                                    param.grad.data *= mask[name]
+                                    param.grad.data[mask[name]] = 0.0
                             if train_config.gradient_clipping and train_config.gradient_clipping_threshold > 0.0:
                                 scaler.unscale_(optimizer)
                                 if train_config.enable_fsdp:
@@ -172,7 +173,7 @@ def train(model, train_dataloader, eval_dataloader, tokenizer, optimizer, lr_sch
                             optimizer.zero_grad()
                             # Apply mask to weights
                             for name, param in model.named_parameters():
-                                param.data *= mask[name]
+                                param.data[mask[name]] = 0.0
                             pbar.update(1)
                     else:
                         # regular backpropagation when fp16 is not used
@@ -181,7 +182,7 @@ def train(model, train_dataloader, eval_dataloader, tokenizer, optimizer, lr_sch
                             # Apply mask to gradients
                             for name, param in model.named_parameters():
                                 if param.grad is not None:
-                                    param.grad.data *= mask[name]
+                                    param.grad.data[mask[name]] = 0.0
                             if train_config.gradient_clipping and train_config.gradient_clipping_threshold > 0.0:
                                 if train_config.enable_fsdp:
                                     model.clip_grad_norm_(train_config.gradient_clipping_threshold)
@@ -191,7 +192,7 @@ def train(model, train_dataloader, eval_dataloader, tokenizer, optimizer, lr_sch
                             optimizer.zero_grad()
                             # Apply mask to weights
                             for name, param in model.named_parameters():
-                                param.data *= mask[name]
+                                param.data[mask[name]] = 0.0
                             pbar.update(1)
                     if train_config.use_profiler or train_config.flop_counter:
                         profile_context.step()
