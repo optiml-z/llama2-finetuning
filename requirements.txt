@@ -9,10 +9,12 @@ black[jupyter]
 datasets
 fire
 peft
-transformers>=4.34.1
+transformers==4.39.3
 sentencepiece
 py7zr
 scipy
 optimum
 matplotlib
+torchvision
+torchaudio
 wandb
