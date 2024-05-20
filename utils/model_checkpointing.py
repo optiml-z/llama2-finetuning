@@ -50,6 +50,8 @@ def load_model_sharded(model, rank, cfg):
         cfg.dist_checkpoint_root_folder
         + "/"
         + cfg.dist_checkpoint_folder
+        + "-"
+        + cfg.model_name
     )
 
     load_dir = Path.cwd() / folder_name
@@ -88,6 +90,8 @@ def save_model_and_optimizer_sharded(model, rank, cfg,optim=None):
         cfg.dist_checkpoint_root_folder
         + "/"
         + cfg.dist_checkpoint_folder
+        + "-"
+        + cfg.model_name
     )
 
     save_dir = Path.cwd() / folder_name
@@ -142,6 +146,8 @@ def save_model_checkpoint(
         cfg.dist_checkpoint_root_folder
         + "/"
         + cfg.dist_checkpoint_folder
+        + "-"
+        + cfg.model_name
         )
         save_dir = Path.cwd() / folder_name
         save_dir.mkdir(parents=True, exist_ok=True)
@@ -201,6 +207,8 @@ def save_optimizer_checkpoint(model, optimizer, rank, cfg, epoch=1):
         cfg.dist_checkpoint_root_folder
         + "/"
         + cfg.dist_checkpoint_folder
+        + "-"
+        + cfg.model_name
         )
         save_dir = Path.cwd() / folder_name
         save_dir.mkdir(parents=True, exist_ok=True)

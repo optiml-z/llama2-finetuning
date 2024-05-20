@@ -37,6 +37,12 @@ Once all the setup is completed, we can begin finetuning the llama2 models. The 
 python3 finetuning.py  [--use_peft] [--peft_method lora] [--quantization] [--use_fp16] --model_name path_to_model_folder/7B --output_dir path_to_save_PEFT_model
 ```
 
+To convert FSDP checkpoints to hf, use the following script:
+
+```python
+python3 utils/convert_fsdp_weights_to_hf.py --fsdp_checkpoint_path <path-to-model-checkpoint> --consolidated_model_path <output-path> --HF_model_path_or_name <original-model-path>
+```
+
 ### Inference
 
 ```bash

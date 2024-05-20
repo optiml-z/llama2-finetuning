@@ -66,10 +66,11 @@ def check_sparsity(model):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, help='LLaMA model')
+    parser.add_argument("--cache_dir", default="llm_weights", type=str )
     args = parser.parse_args()
 
     model = get_llm(args.model, args.cache_dir)
-    model.eval()
+    model.eval()a
     tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=False)
 
     print("*"*30)
