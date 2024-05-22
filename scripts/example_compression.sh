@@ -1,0 +1,4 @@
+
+python main.py --model models/llama-2-7b-hf --prune_method magnitude --sparsity_ratio 0.5 --sparsity_type unstructured --save out/llama2_7b/unstructured/magprune/ --save_model compressed_models/magprune_compression
+python main.py --model models/llama-2-7b-hf --prune_method wanda --sparsity_ratio 0.5 --sparsity_type unstructured --save out/llama2_7b/unstructured/wandaprune/ --save_model compressed_models/wanda_compression
+python main.py --model models/llama-2-7b-hf --prune_method sparsegpt --sparsity_ratio 0.5 --sparsity_type unstructured --save out/llama2_7b/unstructured/sparseprune/ --save_model compressed_models/sparsegpt_compression
