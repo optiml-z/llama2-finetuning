@@ -70,7 +70,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     model = get_llm(args.model, args.cache_dir)
-    model.eval()a
+    model.eval()
     tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=False)
 
     print("*"*30)
