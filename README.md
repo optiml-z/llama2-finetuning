@@ -39,7 +39,7 @@ python3 finetuning.py  [--use_peft] [--peft_method lora] [--quantization] [--use
 
 To convert FSDP checkpoints to hf, use the following script:
 
-```python
+```bash
 python3 utils/convert_fsdp_weights_to_hf.py --fsdp_checkpoint_path <path-to-model-checkpoint> --consolidated_model_path <output-path> --HF_model_path_or_name <original-model-path>
 ```
 
