@@ -51,7 +51,7 @@ def get_llm(model, cache_dir="llm_weights"):
 def get_model_answers(model_path, model_id, question_jsons, args):
 
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
-    model = get_llm(model_id, args.cache_dir)
+    model = get_llm(model_path, args.cache_dir)
 
     ans_jsons = []
     for i, line in enumerate(tqdm(question_jsons)):
@@ -83,7 +83,6 @@ def get_model_answers(model_path, model_id, question_jsons, args):
             }
         )
     return ans_jsons
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
