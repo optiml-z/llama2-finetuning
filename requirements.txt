@@ -8,6 +8,7 @@ black
 black[jupyter]
 datasets
 fire
+fschat
 openai
 peft
 transformers==4.39.3
