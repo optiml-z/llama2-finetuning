@@ -4,7 +4,7 @@ import os
 import time
 
 import openai
-openai.api_key = "<YOUR OPENAI KEY>"
+openai.api_key = ""
 import tqdm
 
 import shortuuid
@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 MAX_API_RETRY = 10
 REQ_TIME_GAP = 30
-
 
 def get_eval(sys_prompt, user_prompt: str, max_tokens: int):
     for i in range(MAX_API_RETRY):
@@ -44,21 +43,23 @@ def get_eval(sys_prompt, user_prompt: str, max_tokens: int):
 
 def parse_score(review):
     try:
-        coherence_score = review.split("\n")[0]
-        consistent_score = review.split("\n")[1]
-        fluency_score = review.split("\n")[2]
-        relevance_score = review.split("\n")[3]
+        accuracy_score = review.split("\n")[0]
+        completeness_score = review.split("\n")[1]
+        relevance_score = review.split("\n")[2]
+        coherence_score = review.split("\n")[3]
+        fluency_score = review.split("\n")[4]
         score = {}
-        score["coherence"] = [float(coherence_score.split(" ")[0]), float(coherence_score.split(" ")[1])]
-        score["consistent"] = [float(consistent_score.split(" ")[0]), float(consistent_score.split(" ")[1])]
-        score["fluency"] = [float(fluency_score.split(" ")[0]), float(fluency_score.split(" ")[1])]
-        score["relevance"] = [float(relevance_score.split(" ")[0]), float(relevance_score.split(" ")[1])]
+        score["accurace"] = float(accuracy_score)
+        score["completeness"] = float(completeness_score)
+        score["relevance"] = float(relevance_score)
+        score["coherence"] = float(coherence_score)
+        score["fluency"] = float(fluency_score)
         return score
     except Exception as e:
         logger.error(
             f"{e}\nContent: {review}\n" "You must manually fix the score pair."
         )
-    return [-1, -1]
+    return [-1]
 
 
 def gen_prompt(reviewer_jsons, prompt_jsons, cat, ques, ans1, ans2):
@@ -87,7 +88,11 @@ def get_json_list(file_path):
     with open(file_path, "r") as f:
         json_list = []
         for line in f:
-            json_list.append(json.loads(line))
+            try:
+                json_list.append(json.loads(line))
+            except json.JSONDecodeError as e:
+                logger.error(f"JSONDecodeError: {e} in line: {line}")
+                raise
         return json_list
 
 
@@ -95,9 +100,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="ChatGPT-based QA evaluation.")
     parser.add_argument("-q", "--question-file", default="./json_utils/new_question.jsonl")
     parser.add_argument("-a", "--answer-file-list", nargs="+", default=[])
-    parser.add_argument("-p", "--prompt-file", default="./json_utils/myprompt.jsonl")
+    parser.add_argument("-p", "--prompt-file", default="./json_utils/prompt.jsonl")
     parser.add_argument("-r", "--reviewer-file", default="./json_utils/reviewer.jsonl")
-    parser.add_argument("-o", "--output-review-file", default="./compressed_answers/vicuna7b/test")
+    parser.add_argument("-o", "--output-review-file", default="./compressed_answers/llama2-7b/magnitude_answer_0.5.jsonl")
     parser.add_argument('--sparsity_ratio', type=float, default=0.0, help='Sparsity level')
     parser.add_argument("--sparsity_type", default="unstructured", type=str, choices=["unstructured", "4:8", "2:4"])
     parser.add_argument("--prune_method", default="magnitude" ,type=str, choices=["magnitude", "wanda", "sparsegpt"])
@@ -109,7 +114,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     filename = f"./compressed_answers/llama2-7b/{args.prune_method}_answer_{args.sparsity_ratio}"
-    args.answer_file_list.append("./golden_answer.jsonl")
+    args.answer_file_list.append("./json_utils/golden_answer.jsonl")
     args.answer_file_list.append(filename+".jsonl")
     args.output_review_file = filename + "_evaluation.jsonl"
 
@@ -170,3 +175,4 @@ if __name__ == "__main__":
             review_jsons[idx]["text"] = review
             review_jsons[idx]["score"] = scores
             output_review_file.write(json.dumps(review_jsons[idx]) + "\n")
+

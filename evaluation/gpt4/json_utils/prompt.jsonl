@@ -1,30 +1,3 @@
-{
-  "prompt_id": 1,
-  "system_prompt": "You are a helpful and precise assistant for evaluating the quality of responses to instructions.",
-  "prompt_template": "[Instruction with Input]\n{text}\n\n[The Start of Ideal Response]\n{answer_1}\n\n[The End of Ideal Response]\n\n[The Start of Generated Response]\n{answer_2}\n\n[The End of Generated Response]\n\n[System]\n{prompt}\n\n",
-  "defaults": {
-    "prompt": "We would like to request your feedback on the performance of the generated response compared to the ideal response in response to the instruction and input displayed above.\nPlease rate the accuracy, completeness, relevance, coherence, and fluency of the generated response. Each metric receives a score on a scale of 1 to 10, where a higher score indicates better overall performance.\nPlease first output five lines containing only one value indicating the score for each of the five metrics. In the subsequent line, please provide a comprehensive explanation of your evaluation, avoiding any potential bias."
-  },
-  "description": "Prompt for instruction-following evaluation",
-  "category": "small"
-}
-{
-  "prompt_id": 2,
-  "system_prompt": "You are a helpful and precise assistant for evaluating the quality of responses to instructions.",
-  "prompt_template": "[Instruction with Input]\n{text}\n\n[The Start of Ideal Response]\n{answer_1}\n\n[The End of Ideal Response]\n\n[The Start of Generated Response]\n{answer_2}\n\n[The End of Generated Response]\n\n[System]\n{prompt}\n\n",
-  "defaults": {
-    "prompt": "We would like to request your feedback on the performance of the generated response compared to the ideal response in response to the instruction and input displayed above.\nPlease rate the accuracy, completeness, relevance, coherence, and fluency of the generated response. Each metric receives a score on a scale of 1 to 10, where a higher score indicates better overall performance.\nPlease first output five lines containing only one value indicating the score for each of the five metrics. In the subsequent line, please provide a comprehensive explanation of your evaluation, avoiding any potential bias."
-  },
-  "description": "Prompt for instruction-following evaluation",
-  "category": "mid"
-}
-{
-  "prompt_id": 3,
-  "system_prompt": "You are a helpful and precise assistant for evaluating the quality of responses to instructions.",
-  "prompt_template": "[Instruction with Input]\n{text}\n\n[The Start of Ideal Response]\n{answer_1}\n\n[The End of Ideal Response]\n\n[The Start of Generated Response]\n{answer_2}\n\n[The End of Generated Response]\n\n[System]\n{prompt}\n\n",
-  "defaults": {
-    "prompt": "We would like to request your feedback on the performance of the generated response compared to the ideal response in response to the instruction and input displayed above.\nPlease rate the accuracy, completeness, relevance, coherence, and fluency of the generated response. Each metric receives a score on a scale of 1 to 10, where a higher score indicates better overall performance.\nPlease first output five lines containing only one value indicating the score for each of the five metrics. In the subsequent line, please provide a comprehensive explanation of your evaluation, avoiding any potential bias."
-  },
-  "description": "Prompt for instruction-following evaluation",
-  "category": "large"
-}
+{"prompt_id": 1, "system_prompt": "You are a helpful and precise assistant for evaluating the quality of responses to instructions.", "prompt_template": "[Instruction with Input]\n{question}\n\n[The Start of Ideal Response]\n{answer_1}\n\n[The End of Ideal Response]\n\n[The Start of Generated Response]\n{answer_2}\n\n[The End of Generated Response]\n\n[System]\n{prompt}\n\n", "defaults": { "prompt": "We would like to request your feedback on the performance of the generated response compared to the ideal response in response to the instruction and input displayed above.\nPlease rate the accuracy, completeness, relevance, coherence, and fluency of the generated response. Each metric receives a score on a scale of 1 to 10, where a higher score indicates better overall performance.\nPlease first output five lines containing only one value indicating the score for each of the five metrics. In the subsequent line, please provide a comprehensive explanation of your evaluation, avoiding any potential bias."}, "description": "Prompt for instruction-following evaluation", "category": "small"}
+{"prompt_id": 2, "system_prompt": "You are a helpful and precise assistant for evaluating the quality of responses to instructions.", "prompt_template": "[Instruction with Input]\n{question}\n\n[The Start of Ideal Response]\n{answer_1}\n\n[The End of Ideal Response]\n\n[The Start of Generated Response]\n{answer_2}\n\n[The End of Generated Response]\n\n[System]\n{prompt}\n\n", "defaults": { "prompt": "We would like to request your feedback on the performance of the generated response compared to the ideal response in response to the instruction and input displayed above.\nPlease rate the accuracy, completeness, relevance, coherence, and fluency of the generated response. Each metric receives a score on a scale of 1 to 10, where a higher score indicates better overall performance.\nPlease first output five lines containing only one value indicating the score for each of the five metrics. In the subsequent line, please provide a comprehensive explanation of your evaluation, avoiding any potential bias."}, "description": "Prompt for instruction-following evaluation", "category": "mid"}
+{"prompt_id": 3, "system_prompt": "You are a helpful and precise assistant for evaluating the quality of responses to instructions.", "prompt_template": "[Instruction with Input]\n{question}\n\n[The Start of Ideal Response]\n{answer_1}\n\n[The End of Ideal Response]\n\n[The Start of Generated Response]\n{answer_2}\n\n[The End of Generated Response]\n\n[System]\n{prompt}\n\n", "defaults": { "prompt": "We would like to request your feedback on the performance of the generated response compared to the ideal response in response to the instruction and input displayed above.\nPlease rate the accuracy, completeness, relevance, coherence, and fluency of the generated response. Each metric receives a score on a scale of 1 to 10, where a higher score indicates better overall performance.\nPlease first output five lines containing only one value indicating the score for each of the five metrics. In the subsequent line, please provide a comprehensive explanation of your evaluation, avoiding any potential bias."}, "description": "Prompt for instruction-following evaluation", "category": "large"}

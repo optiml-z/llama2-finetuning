@@ -9,7 +9,7 @@ black[jupyter]
 datasets
 fire
 fschat
-openai
+openai==0.28.0
 peft
 transformers==4.39.3
 sentencepiece

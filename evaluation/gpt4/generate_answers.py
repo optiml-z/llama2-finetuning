@@ -66,7 +66,7 @@ def get_model_answers(model_path, model_id, question_jsons, args):
         output_ids = model.generate(
             torch.as_tensor(input_ids).cuda(),
             do_sample=True,
-            temperature=0.0,
+            temperature=0.1,
             max_new_tokens=256,
         )
         output_ids = output_ids[0][len(input_ids[0]) :]
@@ -86,10 +86,10 @@ def get_model_answers(model_path, model_id, question_jsons, args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model-path", type=str)
-    parser.add_argument("--model-id", default = "meta-llama/Llama-2-7b", type=str)
-    parser.add_argument("--question-file", type=str, default="./json_utils/new_question.jsonl")
-    parser.add_argument("--num-gpus", type=int, default=1)
+    parser.add_argument("--model_path", type=str)
+    parser.add_argument("--model_id", default = "meta-llama/Llama-2-7b", type=str)
+    parser.add_argument("--question_file", type=str, default="./json_utils/new_question.jsonl")
+    parser.add_argument("--num_gpus", type=int, default=1)
     parser.add_argument("--cache_dir", default="./llm_weights", type=str )
     parser.add_argument('--seed', type=int, default=0, help='Seed for sampling the calibration data.')
     parser.add_argument('--nsamples', type=int, default=128, help='Number of calibration samples.')
